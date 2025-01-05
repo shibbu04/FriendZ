@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
 import { store } from './store';
-import { ThemeProvider } from './context/ThemeContext';
+// import { ThemeProvider } from './context/ThemeContext';
 
 import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
@@ -14,7 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider>
+      {/* <ThemeProvider> */}
         <Router>
           <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
             <Navbar />
@@ -36,7 +36,7 @@ function App() {
             <Toaster position="top-right" />
           </div>
         </Router>
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </Provider>
   );
 }

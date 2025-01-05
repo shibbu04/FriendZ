@@ -27,7 +27,7 @@ export default function FriendRequests() {
 
   const fetchRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/friends/requests', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URI}/api/friends/requests`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRequests(response.data);
@@ -41,7 +41,7 @@ export default function FriendRequests() {
   const handleRequest = async (requestId: string, action: 'accept' | 'reject') => {
     try {
       await axios.post(
-        'http://localhost:5000/api/friends/handle-request',
+        `${import.meta.env.VITE_API_URI}/api/friends/handle-request`,
         { requestId, action },
         { headers: { Authorization: `Bearer ${token}` } }
       );
