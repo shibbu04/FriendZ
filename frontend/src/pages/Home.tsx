@@ -1,3 +1,4 @@
+// Home.tsx
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
@@ -9,6 +10,7 @@ import UserCard from '../components/UserCard';
 import FriendRequests from '../components/FriendRequests';
 import type { RootState } from '../store';
 
+const API_URI = import.meta.env.VITE_API_URI || 'http://localhost:5000/api';
 interface User {
   _id: string;
   username: string;
@@ -24,29 +26,37 @@ export default function Home() {
   const { token, user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    fetchFriends();
-    fetchRecommendations();
+    if (token) {
+      fetchFriends();
+      fetchRecommendations();
+    }
   }, [token]);
 
   const fetchFriends = async () => {
+    if (!token || !user?.id) return;
+    
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URI}/users/profile/${user?.id}`, {
+      const response = await axios.get(`${API_URI}/users/profile/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setFriends(response.data.friends);
+      setFriends(response.data.friends || []);
     } catch (error) {
       console.error('Failed to fetch friends:', error);
+      setFriends([]);
     }
   };
 
   const fetchRecommendations = async () => {
+    if (!token) return;
+    
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URI}/friends/recommendations`, {
+      const response = await axios.get(`${API_URI}/friends/recommendations`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setRecommendations(response.data);
+      setRecommendations(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Failed to fetch recommendations:', error);
+      setRecommendations([]);
     } finally {
       setLoading(false);
     }
@@ -59,19 +69,20 @@ export default function Home() {
     }
 
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URI}/users/search?query=${query}`, {
+      const response = await axios.get(`${API_URI}/users/search?query=${query}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setSearchResults(response.data);
+      setSearchResults(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Search failed:', error);
+      setSearchResults([]);
     }
   };
 
   const handleSendRequest = async (friendId: string) => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_URI}/friends/request`,
+        `${API_URI}/friends/request`,
         { friendId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -85,7 +96,7 @@ export default function Home() {
   const handleRemoveFriend = async (friendId: string) => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_API_URI}/friends/${friendId}`,
+        `${API_URI}/friends/${friendId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success('Friend removed');
@@ -133,7 +144,7 @@ export default function Home() {
         <h2 className="text-xl font-semibold text-gray-900">Recommended Friends</h2>
         {loading ? (
           <div>Loading recommendations...</div>
-        ) : (
+        ) : recommendations.length > 0 ? (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {recommendations.map((user) => (
               <UserCard
@@ -143,6 +154,8 @@ export default function Home() {
               />
             ))}
           </div>
+        ) : (
+          <p className="text-gray-500">No recommendations available</p>
         )}
       </section>
     </div>

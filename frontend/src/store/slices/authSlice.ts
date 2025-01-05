@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_URI = import.meta.env.VITE_API_URI || 'http://localhost:5000/api';
 
 // Load user from localStorage on startup
-const loadUser = () => {
+const loadUser = (): { token: string | null; user: any } => {
   try {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');

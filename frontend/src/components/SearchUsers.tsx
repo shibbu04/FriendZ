@@ -5,6 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import type { RootState } from '../store';
 
+const API_URI = import.meta.env.VITE_API_URI || 'http://localhost:5000/api';
 interface User {
   _id: string;
   username: string;
@@ -31,7 +32,7 @@ export default function SearchUsers() {
   const searchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${import.meta.env.VITE_API_URI}/users/search?query=${query}`, {
+      const response = await axios.get(`${API_URI}/users/search?query=${query}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -45,7 +46,7 @@ export default function SearchUsers() {
   const sendFriendRequest = async (userId: string) => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_URI}/friends/request`,
+        `${API_URI}/friends/request`,
         { friendId: userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
