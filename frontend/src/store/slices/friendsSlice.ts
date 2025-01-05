@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URI = import.meta.env.VITE_API_URI || 'http://localhost:5000/api';
 
 export const sendFriendRequest = createAsyncThunk(
   'friends/sendRequest',
   async (friendId: string, { getState }) => {
     const { auth } = getState() as { auth: { token: string } };
     const response = await axios.post(
-      `${API_URL}/friends/request`,
+      `${API_URI}/friends/request`,
       { friendId },
       {
         headers: { Authorization: `Bearer ${auth.token}` },
@@ -22,7 +22,7 @@ export const getFriendRecommendations = createAsyncThunk(
   'friends/getRecommendations',
   async (_, { getState }) => {
     const { auth } = getState() as { auth: { token: string } };
-    const response = await axios.get(`${API_URL}/friends/recommendations`, {
+    const response = await axios.get(`${API_URI}/friends/recommendations`, {
       headers: { Authorization: `Bearer ${auth.token}` },
     });
     return response.data;
