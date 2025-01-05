@@ -30,7 +30,7 @@ export default function Home() {
 
   const fetchFriends = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URI}/api/users/profile/${user?.id}`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URI}/users/profile/${user?.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFriends(response.data.friends);
@@ -41,7 +41,7 @@ export default function Home() {
 
   const fetchRecommendations = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URI}/api/friends/recommendations`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URI}/friends/recommendations`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRecommendations(response.data);
@@ -59,7 +59,7 @@ export default function Home() {
     }
 
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URI}/api/users/search?query=${query}`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URI}/users/search?query=${query}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSearchResults(response.data);
@@ -71,7 +71,7 @@ export default function Home() {
   const handleSendRequest = async (friendId: string) => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_URI}/api/friends/request`,
+        `${import.meta.env.VITE_API_URI}/friends/request`,
         { friendId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -85,7 +85,7 @@ export default function Home() {
   const handleRemoveFriend = async (friendId: string) => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_API_URI}/api/friends/${friendId}`,
+        `${import.meta.env.VITE_API_URI}/friends/${friendId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success('Friend removed');
